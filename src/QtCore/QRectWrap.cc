@@ -88,6 +88,7 @@ NAN_METHOD(QRectWrap::bottomLeft) {
   // TODO: check for leaks
   QPointWrap* wrap = new QPointWrap(point);
   info.GetReturnValue().Set(QPointWrap::NewInstance(wrap));
+  delete wrap;
 }
 
 NAN_METHOD(QRectWrap::bottomRight) {
