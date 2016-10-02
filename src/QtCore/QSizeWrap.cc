@@ -33,11 +33,17 @@ void QSizeWrap::Init(Nan::ADDON_REGISTER_FUNCTION_ARGS_TYPE target) {
   Nan::SetAccessor(proto, Nan::New("height").ToLocalChecked(), height, setHeight);
   Nan::SetAccessor(proto, Nan::New("width").ToLocalChecked(), width, setWidth);
 
-  Nan::SetPrototypeMethod(tpl, "isEmpty", isEmpty);
-  Nan::SetPrototypeMethod(tpl, "isNull",  isNull);
-  Nan::SetPrototypeMethod(tpl, "isValid", isValid);
-  Nan::SetPrototypeMethod(tpl, "scale",   scale);
-  Nan::SetPrototypeMethod(tpl, "scaled",  scaled);
+  Nan::SetPrototypeMethod(tpl, "isEmpty",    isEmpty);
+  Nan::SetPrototypeMethod(tpl, "isNull",     isNull);
+  Nan::SetPrototypeMethod(tpl, "isValid",    isValid);
+  Nan::SetPrototypeMethod(tpl, "scale",      scale);
+  Nan::SetPrototypeMethod(tpl, "scaled",     scaled);
+  Nan::SetPrototypeMethod(tpl, "transpose",  transpose);
+  Nan::SetPrototypeMethod(tpl, "transposed", transposed);
+  Nan::SetPrototypeMethod(tpl, "multiply",   multiply);
+  Nan::SetPrototypeMethod(tpl, "plus",       plus);
+  Nan::SetPrototypeMethod(tpl, "minus",      minus);
+  Nan::SetPrototypeMethod(tpl, "divide",     divide);
 
   constructor.Reset(tpl->GetFunction());
   Nan::Set(target, Nan::New("QSize").ToLocalChecked(), tpl->GetFunction());
@@ -157,12 +163,14 @@ NAN_METHOD(QSizeWrap::scaled) {
     QSizeWrap* wrap = new QSizeWrap(size2);
     info.GetReturnValue().Set(QSizeWrap::NewInstance(wrap));
     delete wrap;
+  } else {
+    info.GetReturnValue().Set(Nan::Undefined());
   }
-  info.GetReturnValue().Set(Nan::Undefined());
 }
 
 NAN_METHOD(QSizeWrap::transpose) {
   QSizeWrap* size = Nan::ObjectWrap::Unwrap<QSizeWrap>(info.This());
+  size->size_->transpose();
   info.GetReturnValue().Set(Nan::Undefined());
 }
 
