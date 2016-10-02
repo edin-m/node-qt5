@@ -3,7 +3,7 @@ const expect = require('chai').expect;
 
 const DELTA = 0.000999;
 
-describe('Test QPointF', () => {
+describe.skip('Test QPointF', () => {
 	const obj1 = { x: 1.134, y: 2.258 };
 	const obj2 = { x: 5.782, y: 2.584 };
 	const point = new qt.QPointF(obj1.x, obj1.y);

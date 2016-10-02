@@ -19,17 +19,20 @@ class QPointWrap : public Nan::ObjectWrap {
 
 private:
 
-  static void New(const Nan::FunctionCallbackInfo<v8::Value>& info);
+  static NAN_METHOD(New);
 
-  static void isNull(const Nan::FunctionCallbackInfo<v8::Value>& info);
-  static void x(const Nan::FunctionCallbackInfo<v8::Value>& info);
-  static void y(const Nan::FunctionCallbackInfo<v8::Value>& info);
-  static void setX(const Nan::FunctionCallbackInfo<v8::Value>& info);
-  static void setY(const Nan::FunctionCallbackInfo<v8::Value>& info);
-  static void multiply(const Nan::FunctionCallbackInfo<v8::Value>& info);
-  static void plus(const Nan::FunctionCallbackInfo<v8::Value>& info);
-  static void minus(const Nan::FunctionCallbackInfo<v8::Value>& info);
-  static void divide(const Nan::FunctionCallbackInfo<v8::Value>& info);
+  //static void New(const Nan::FunctionCallbackInfo<v8::Value>& info);
+
+  static NAN_GETTER(x);
+  static NAN_SETTER(setX);
+  static NAN_GETTER(y);
+  static NAN_SETTER(setY);
+
+  static NAN_METHOD(isNull);
+  static NAN_METHOD(multiply);
+  static NAN_METHOD(plus);
+  static NAN_METHOD(minus);
+  static NAN_METHOD(divide);
 
   QPoint* point_;
 };

@@ -1,7 +1,7 @@
 const qt = require('../hello');
 const expect = require('chai').expect;
 
-describe('Test QPoint', () => {
+describe.skip('Test QPoint', () => {
 	it('should do sanity test', () => {
 		expect(2 + 2).to.equal(4);
 	});
