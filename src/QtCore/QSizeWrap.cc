@@ -185,8 +185,7 @@ NAN_METHOD(QSizeWrap::transposed) {
 NAN_METHOD(QSizeWrap::multiply) {
   QSizeWrap* size = Nan::ObjectWrap::Unwrap<QSizeWrap>(info.This());
   if (info.Length() == 1 && info[0]->IsNumber()) {
-    double number = info[0]->NumberValue();
-    size->size_->operator*=(number);
+    size->size_->operator*=(info[0]->NumberValue());
   }
   info.GetReturnValue().Set(info.This());
 }

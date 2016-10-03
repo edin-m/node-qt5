@@ -9,6 +9,11 @@ QRectWrap::QRectWrap()
   rect_ = new QRect();
 }
 
+QRectWrap::QRectWrap(const QRect& rect)
+  : Nan::ObjectWrap() {
+  rect_ = new QRect(rect);
+}
+
 QRectWrap::QRectWrap(int left, int top, int width, int height)
   : Nan::ObjectWrap() {
   rect_ = new QRect(left, top, width, height);
@@ -16,6 +21,24 @@ QRectWrap::QRectWrap(int left, int top, int width, int height)
 
 QRectWrap::~QRectWrap() {
   delete rect_;
+}
+
+v8::Local<v8::Object> QRectWrap::NewInstance(QRectWrap* wrap) {
+  Nan::EscapableHandleScope scope;
+  const unsigned argc = 1;
+  v8::Local<v8::Value> argv[argc] = { Nan::New<v8::External>(wrap) };
+  v8::Local<v8::Function> cons = Nan::New<v8::Function>(constructor);
+  v8::Local<v8::Object> instance = cons->NewInstance(argc, argv);
+  return scope.Escape(instance);
+}
+
+v8::Local<v8::Object> QRectWrap::NewInstance(v8::Local<v8::Value> arg) {
+  Nan::EscapableHandleScope scope;
+  const unsigned argc = 1;
+  v8::Local<v8::Value> argv[argc] = { arg };
+  v8::Local<v8::Function> cons = Nan::New<v8::Function>(constructor);
+  v8::Local<v8::Object> instance = cons->NewInstance(argc, argv);
+  return scope.Escape(instance);
 }
 
 void QRectWrap::Init(Nan::ADDON_REGISTER_FUNCTION_ARGS_TYPE target) {
@@ -38,6 +61,8 @@ void QRectWrap::Init(Nan::ADDON_REGISTER_FUNCTION_ARGS_TYPE target) {
   Nan::SetAccessor(proto, Nan::New("right").ToLocalChecked(), right, setRight);
   Nan::SetAccessor(proto, Nan::New("left").ToLocalChecked(), left, setLeft);
 
+  Nan::SetPrototypeMethod(ctor, "adjust", adjust);
+  Nan::SetPrototypeMethod(ctor, "adjusted", adjusted);
   Nan::SetPrototypeMethod(ctor, "bottomLeft", bottomLeft);
   Nan::SetPrototypeMethod(ctor, "bottomRight", bottomRight);
   Nan::SetPrototypeMethod(ctor, "center", center);
@@ -52,28 +77,72 @@ void QRectWrap::Init(Nan::ADDON_REGISTER_FUNCTION_ARGS_TYPE target) {
 
 NAN_METHOD(QRectWrap::New) {
   if (info.IsConstructCall()) {
-    // Invoked as constructor: `new MyObject(...)`
     QRectWrap* rect;
     if (info.Length() == 0) {
       rect = new QRectWrap();
+    } else if (info.Length() == 1 && info[0]->IsExternal()) {
+      QRectWrap* wrap = static_cast<QRectWrap*>(info[0].As<v8::External>()->Value());
+      rect = new QRectWrap(*wrap->rect_);
+    } else if (info.Length() == 1 && info[0]->IsObject()) {
+      QRectWrap* wrap = Nan::ObjectWrap::Unwrap<QRectWrap>(info[0]->ToObject());
+      rect = new QRectWrap(*wrap->rect_);
+    } else if (info.Length() == 2) {
+      // TODO: (QPoint, QPoint)
+      // TODO: (QPoint, QSize)
     } else if (info.Length() == 4) {
       int left   = info[0]->IsUndefined() ? 0 : Nan::To<int>(info[0]).FromJust();
       int top    = info[1]->IsUndefined() ? 0 : Nan::To<int>(info[1]).FromJust();
       int width  = info[2]->IsUndefined() ? 0 : Nan::To<int>(info[2]).FromJust();
       int height = info[3]->IsUndefined() ? 0 : Nan::To<int>(info[3]).FromJust();
       rect = new QRectWrap(left, top, width, height);
-    } else if (info.Length() == 2) {
-      // TODO: not supported (QPoint, QPoint) and (QPoint, QSize)
     }
     rect->Wrap(info.This());
     info.GetReturnValue().Set(info.This());
   } else {
-    // Invoked as plain function `MyObject(...)`, turn into construct call.
-    // TODO: support not only QRect()
-    // const int argc = 1;
-    // v8::Local<v8::Value> argv[argc] = { info[0] };
     v8::Local<v8::Function> cons = Nan::New<v8::Function>(constructor);
-    info.GetReturnValue().Set(cons->NewInstance(0, {}));
+    // TODO: (QPoint, QPoint)
+    // TODO: (QPoint, QSize)
+    if (info.Length() == 1) {
+      const int argc = 1;
+      v8::Local<v8::Value> argv[argc] = { info[0] };
+      v8::Local<v8::Function> cons = Nan::New<v8::Function>(constructor);
+      info.GetReturnValue().Set(cons->NewInstance(argc, argv));
+    } else if (info.Length() == 4) {
+      const int argc = 4;
+      v8::Local<v8::Value> argv[argc] = { info[0], info[1], info[2], info[3] };
+      v8::Local<v8::Function> cons = Nan::New<v8::Function>(constructor);
+      info.GetReturnValue().Set(cons->NewInstance(argc, argv));
+    } else {
+      info.GetReturnValue().Set(cons->NewInstance(0, {}));
+    }
+  }
+}
+
+NAN_METHOD(QRectWrap::adjust) {
+  QRectWrap* rect = Nan::ObjectWrap::Unwrap<QRectWrap>(info.This());
+  if (info.Length() == 4) {
+    int dx1 = info[0]->IsUndefined() ? 0 : info[0]->Int32Value();
+    int dx2 = info[1]->IsUndefined() ? 0 : info[1]->Int32Value();
+    int dx3 = info[2]->IsUndefined() ? 0 : info[2]->Int32Value();
+    int dx4 = info[3]->IsUndefined() ? 0 : info[3]->Int32Value();
+    rect->rect_->adjust(dx1, dx2, dx3, dx4);
+  }
+  info.GetReturnValue().Set(Nan::Undefined());
+}
+
+NAN_METHOD(QRectWrap::adjusted) {
+  QRectWrap* rect = Nan::ObjectWrap::Unwrap<QRectWrap>(info.This());
+  if (info.Length() == 4) {
+    int dx1 = info[0]->IsUndefined() ? 0 : info[0]->Int32Value();
+    int dx2 = info[1]->IsUndefined() ? 0 : info[1]->Int32Value();
+    int dx3 = info[2]->IsUndefined() ? 0 : info[2]->Int32Value();
+    int dx4 = info[3]->IsUndefined() ? 0 : info[3]->Int32Value();
+    QRect rect2 = rect->rect_->adjusted(dx1, dx2, dx3, dx4);
+    QRectWrap* wrap = new QRectWrap(rect2);
+    info.GetReturnValue().Set(QRectWrap::NewInstance(wrap));
+    delete wrap;
+  } else {
+    info.GetReturnValue().Set(Nan::Undefined());
   }
 }
 

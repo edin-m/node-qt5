@@ -36,6 +36,7 @@ void QPointWrap::Init(v8::Local<v8::Object> exports) {
 
   // Prototype
   Nan::SetPrototypeMethod(tpl, "isNull", isNull);
+  Nan::SetPrototypeMethod(tpl, "manhattanLength", manhattanLength);
   Nan::SetPrototypeMethod(tpl, "multiply", multiply);
   Nan::SetPrototypeMethod(tpl, "plus", plus);
   Nan::SetPrototypeMethod(tpl, "minus", minus);
@@ -51,29 +52,43 @@ NAN_METHOD(QPointWrap::New) {
     if (info.Length() == 2) {
       int x = info[0]->IsUndefined() ? 0 : Nan::To<int>(info[0]).FromJust();
       int y = info[1]->IsUndefined() ? 0 : Nan::To<int>(info[1]).FromJust();
-
       point = new QPointWrap(x, y);
     } else if (info.Length() == 1 && info[0]->IsExternal()) {
       QPointWrap* wrap = static_cast<QPointWrap*>(info[0].As<v8::External>()->Value());
       point = new QPointWrap(*wrap->point_);
+    } else if (info.Length() == 1 && info[0]->IsObject()) {
+      QPointWrap* wrap = Nan::ObjectWrap::Unwrap<QPointWrap>(info[0]->ToObject());
+      point = new QPointWrap(*wrap->point_);
     } else {
       point = new QPointWrap();
     }
-
     point->Wrap(info.This());
     info.GetReturnValue().Set(info.This());
   } else {
-    // TODO: only works QPoint()
-    const int argc = 1;
-    v8::Local<v8::Value> argv[argc] = { info[0] };
     v8::Local<v8::Function> cons = Nan::New<v8::Function>(constructor);
-    info.GetReturnValue().Set(cons->NewInstance(argc, argv));
+    if (info.Length() == 1) {
+      const int argc = 1;
+      v8::Local<v8::Value> argv[argc] = { info[0] };
+      v8::Local<v8::Function> cons = Nan::New<v8::Function>(constructor);
+      info.GetReturnValue().Set(cons->NewInstance(argc, argv));
+    } else if (info.Length() == 2) {
+      const int argc = 2;
+      v8::Local<v8::Value> argv[argc] = { info[0], info[1] };
+      info.GetReturnValue().Set(cons->NewInstance(argc, argv));
+    } else {
+      info.GetReturnValue().Set(cons->NewInstance(0, {}));
+    }
   }
 }
 
 NAN_METHOD(QPointWrap::isNull) {
   QPointWrap* point = Nan::ObjectWrap::Unwrap<QPointWrap>(info.This());
   info.GetReturnValue().Set(Nan::New<v8::Boolean>(point->point_->isNull()));
+}
+
+NAN_METHOD(QPointWrap::manhattanLength) {
+  QPointWrap* point = Nan::ObjectWrap::Unwrap<QPointWrap>(info.This());
+  info.GetReturnValue().Set(Nan::New<v8::Number>(point->point_->manhattanLength()));
 }
 
 NAN_GETTER(QPointWrap::x) {
@@ -102,13 +117,10 @@ NAN_SETTER(QPointWrap::setY) {
 
 NAN_METHOD(QPointWrap::multiply) {
   QPointWrap* point = Nan::ObjectWrap::Unwrap<QPointWrap>(info.This());
-  if (info.Length() > 0) {
-    if (info[0]->IsInt32()) {
-      point->point_->operator*=((int) info[0]->IntegerValue());
-    } else if (info[0]->IsNumber()) {
-      point->point_->operator*=(info[0]->NumberValue());
-    }
+  if (info.Length() > 0 && info[0]->IsNumber()) {
+    point->point_->operator*=(info[0]->NumberValue());
   }
+  info.GetReturnValue().Set(info.This());
 }
 
 NAN_METHOD(QPointWrap::plus) {
@@ -117,6 +129,7 @@ NAN_METHOD(QPointWrap::plus) {
     QPointWrap* argpoint = Nan::ObjectWrap::Unwrap<QPointWrap>(info[0]->ToObject());
     point->point_->operator+=(*(argpoint->point_));
   }
+  info.GetReturnValue().Set(info.This());
 }
 
 NAN_METHOD(QPointWrap::minus) {
@@ -125,6 +138,7 @@ NAN_METHOD(QPointWrap::minus) {
     QPointWrap* argpoint = Nan::ObjectWrap::Unwrap<QPointWrap>(info[0]->ToObject());
     point->point_->operator-=(*(argpoint->point_));
   }
+  info.GetReturnValue().Set(info.This());
 }
 
 NAN_METHOD(QPointWrap::divide) {
@@ -132,12 +146,22 @@ NAN_METHOD(QPointWrap::divide) {
   if (info.Length() > 0 && info[0]->IsNumber()) {
     point->point_->operator/=(info[0]->NumberValue());
   }
+  info.GetReturnValue().Set(info.This());
 }
 
 v8::Local<v8::Object> QPointWrap::NewInstance(QPointWrap* wrap) {
   Nan::EscapableHandleScope scope;
   const unsigned argc = 1;
   v8::Local<v8::Value> argv[argc] = { Nan::New<v8::External>(wrap) };
+  v8::Local<v8::Function> cons = Nan::New<v8::Function>(constructor);
+  v8::Local<v8::Object> instance = cons->NewInstance(argc, argv);
+  return scope.Escape(instance);
+}
+
+v8::Local<v8::Object> QPointWrap::NewInstance(v8::Local<v8::Value> arg) {
+  Nan::EscapableHandleScope scope;
+  const unsigned argc = 1;
+  v8::Local<v8::Value> argv[argc] = { arg };
   v8::Local<v8::Function> cons = Nan::New<v8::Function>(constructor);
   v8::Local<v8::Object> instance = cons->NewInstance(argc, argv);
   return scope.Escape(instance);

@@ -9,6 +9,7 @@ class QPointWrap : public Nan::ObjectWrap {
  public:
   static void Init(v8::Local<v8::Object> exports);
   static v8::Local<v8::Object> NewInstance(QPointWrap* wrap);
+  static v8::Local<v8::Object> NewInstance(v8::Local<v8::Value> arg);
 
   explicit QPointWrap();
   explicit QPointWrap(const QPoint& point);
@@ -29,6 +30,7 @@ private:
   static NAN_SETTER(setY);
 
   static NAN_METHOD(isNull);
+  static NAN_METHOD(manhattanLength);
   static NAN_METHOD(multiply);
   static NAN_METHOD(plus);
   static NAN_METHOD(minus);

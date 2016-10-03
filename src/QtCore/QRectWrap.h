@@ -8,14 +8,19 @@
 class QRectWrap : public Nan::ObjectWrap {
  public:
   static void Init(Nan::ADDON_REGISTER_FUNCTION_ARGS_TYPE target);
+  static v8::Local<v8::Object> NewInstance(QRectWrap* wrap);
+  static v8::Local<v8::Object> NewInstance(v8::Local<v8::Value> arg);
 
  private:
    explicit QRectWrap();
+   explicit QRectWrap(const QRect& rect);
    explicit QRectWrap(int left, int top, int width, int height);
   ~QRectWrap();
 
   static NAN_METHOD(New);
 
+  static NAN_METHOD(adjust);
+  static NAN_METHOD(adjusted);
   static NAN_GETTER(bottom);
   static NAN_METHOD(bottomLeft);
   static NAN_METHOD(bottomRight);

@@ -26,7 +26,7 @@ describe('Test QSize class', () => {
   	expect(qsize3.height).to.equal(2);
   });
   it('should test width/height set/get', () => {
-  	const qsize = new qt.QSize(11, 13);
+  	const qsize = qt.QSize(11, 13);
   	expect(qsize.width).to.equal(11);
   	expect(qsize.height).to.equal(13);
   	qsize.width = 17;
@@ -34,18 +34,18 @@ describe('Test QSize class', () => {
   	expect(qsize.width).to.equal(17);
   	expect(qsize.height).to.equal(19);
   });
-  it('should test isEmpty, isNull, isValid', () => {
-  	const qsize1 = new qt.QSize();
+  it('should test isEmpty(), isNull(), isValid()', () => {
+  	const qsize1 = qt.QSize();
   	expect(qsize1.isValid()).to.equal(false);
   	expect(qsize1.isEmpty()).to.equal(true);
   	expect(qsize1.isNull()).to.equal(false);
-  	const qsize2 = new qt.QSize(11, 13);
+  	const qsize2 = qt.QSize(11, 13);
   	expect(qsize2.isValid()).to.equal(true);
   	expect(qsize2.isEmpty()).to.equal(false);
   	qsize2.width = qsize2.height = 0;
   	expect(qsize2.isNull()).to.equal(true);
   });
-  it('should test scale', () => {
+  it('should test scale()', () => {
   	const qsize1 = qt.QSize(10, 12);
   	qsize1.scale(60, 60, qt.Qt.AspectRatioMode.IgnoreAspectRatio);
   	expect(qsize1.width).to.equal(60);
@@ -60,7 +60,7 @@ describe('Test QSize class', () => {
   	expect(qsize3.height).to.equal(72);
   	// TODO: scale with QSize as argument
   });
-  it('should test scaled', () => {
+  it('should test scaled()', () => {
   	const qsize1 = qt.QSize(10, 12).scaled(60, 60, qt.Qt.AspectRatioMode.IgnoreAspectRatio);
   	expect(qsize1.width).to.equal(60);
   	expect(qsize1.height).to.equal(60);
@@ -72,7 +72,7 @@ describe('Test QSize class', () => {
   	expect(qsize3.height).to.equal(72);
   	// TODO: scaled with QSize as argument
   });
-  it('should test transpose/transposed', () => {
+  it('should test transpose/transposed()', () => {
   	const qsize1 = qt.QSize(11, 13);
   	qsize1.transpose();
   	expect(qsize1.width).to.equal(13);
