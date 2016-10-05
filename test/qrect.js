@@ -53,4 +53,48 @@ describe('Test QRect class', () => {
   	expect(qrect3.width).to.equal(17);
   	expect(qrect3.height).to.equal(19);
   });
+  it('should test bottom()', () => {
+  	const qrect1 = qt.QRect(11, 13, 17, 19);
+  	expect(qrect1.bottom).to.equal(13 + 19 - 1);
+  });
+  it('should test bottomLeft()', () => {
+  	const qrect1 = qt.QRect(11, 13, 17, 19);
+  	const qpoint1 = qrect1.bottomLeft();
+  	expect(qpoint1.x).to.equal(11);
+  	expect(qpoint1.y).to.equal(13 + 19 - 1);
+  	expect(qpoint1 instanceof qt.QPoint).to.equal(true);
+  });
+  it('should test bottomRight()', () => {
+  	const qrect1 = qt.QRect(11, 13, 17, 19);
+  	const qpoint1 = qrect1.bottomRight();
+  	expect(qpoint1.x).to.equal(11 + 17 - 1);
+  	expect(qpoint1.y).to.equal(13 + 19 - 1);
+  	expect(qpoint1 instanceof qt.QPoint).to.equal(true);
+  });
+  it('should test center()', () => {
+  	const qrect1 = qt.QRect(11, 13, 17, 19);
+  	const qpoint1 = qrect1.center();
+  	expect(qpoint1.x).to.equal(19);
+  	expect(qpoint1.y).to.equal(22);
+  	expect(qpoint1 instanceof qt.QPoint).to.equal(true);
+  });
+  it('should test contains()', () => {
+  	const qrect1 = qt.QRect(11, 13, 17, 19);
+  	expect(qrect1.contains(5, 5)).to.equal(false);
+  	expect(qrect1.contains(15, 15)).to.equal(true);
+  });
+  it('should test intersect/intersected');
+  it('should test isValid() isEmpty() isNull()', () => {
+  	const qrect1 = qt.QRect(11, 13, 17, 19);
+  	expect(qrect1.isEmpty()).to.equal(false);
+  	expect(qrect1.isValid()).to.equal(true);
+  	expect(qrect1.isNull()).to.equal(false);
+  	qrect1.left = 100;
+  	qrect1.top = 100;
+  	expect(qrect1.isEmpty()).to.equal(true);
+  	expect(qrect1.isValid()).to.equal(false);
+  	qrect1.width = 0;
+  	qrect1.height = 0;
+  	expect(qrect1.isNull()).to.equal(true);
+  });
 });

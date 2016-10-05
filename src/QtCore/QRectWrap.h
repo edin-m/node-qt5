@@ -25,9 +25,9 @@ class QRectWrap : public Nan::ObjectWrap {
   static NAN_METHOD(bottomLeft);
   static NAN_METHOD(bottomRight);
   static NAN_METHOD(center);
-  // TODO: ...
+  static NAN_METHOD(contains);
   static NAN_GETTER(height);
-  // TODO: ...
+  // TODO: intersected intersects
   static NAN_METHOD(isEmpty);
   static NAN_METHOD(isNull);
   static NAN_METHOD(isValid);

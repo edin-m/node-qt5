@@ -66,6 +66,7 @@ void QRectWrap::Init(Nan::ADDON_REGISTER_FUNCTION_ARGS_TYPE target) {
   Nan::SetPrototypeMethod(ctor, "bottomLeft", bottomLeft);
   Nan::SetPrototypeMethod(ctor, "bottomRight", bottomRight);
   Nan::SetPrototypeMethod(ctor, "center", center);
+  Nan::SetPrototypeMethod(ctor, "contains", contains);
 
   Nan::SetPrototypeMethod(ctor, "isEmpty", isEmpty);
   Nan::SetPrototypeMethod(ctor, "isNull", isNull);
@@ -165,6 +166,7 @@ NAN_METHOD(QRectWrap::bottomRight) {
   QPoint point = rect->rect_->bottomRight();
   QPointWrap* wrap = new QPointWrap(point);
   info.GetReturnValue().Set(QPointWrap::NewInstance(wrap));
+  delete wrap;
 }
 
 NAN_METHOD(QRectWrap::center) {
@@ -172,6 +174,21 @@ NAN_METHOD(QRectWrap::center) {
   QPoint point = rect->rect_->center();
   QPointWrap* wrap = new QPointWrap(point);
   info.GetReturnValue().Set(QPointWrap::NewInstance(wrap));
+  delete wrap;
+}
+
+NAN_METHOD(QRectWrap::contains) {
+  QRectWrap* rect = Nan::ObjectWrap::Unwrap<QRectWrap>(info.This());
+  // TODO: only supported here is (x, y)
+  if (info.Length() == 2) {
+    if (info[0]->IsNumber() && info[1]->IsNumber()) {
+      int x = info[0]->Int32Value();
+      int y = info[1]->Int32Value();
+      info.GetReturnValue().Set(Nan::New<v8::Boolean>(rect->rect_->contains(x, y)));
+    }
+  } else {
+    info.GetReturnValue().Set(Nan::Undefined());
+  }
 }
 
 NAN_GETTER(QRectWrap::height) {
