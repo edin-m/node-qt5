@@ -1,4 +1,11 @@
+package-lock.json
 build
 node_modules
 .DS_Store
-
+*.bak
+*.includes
+*.files
+*.user
+.idea
+.creator
+napi-node-qt5.config
