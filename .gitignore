@@ -9,3 +9,9 @@ node_modules
 .idea
 .creator
 napi-node-qt5.config
+
+# symlinks - will be moved to single folder
+QtCore
+QtGui
+QtWidgets
+node_headers
