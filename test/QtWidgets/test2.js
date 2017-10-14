@@ -11,34 +11,15 @@ function main() {
     const button = new qt.QPushButton('Create server');
     // button.wickedSick = 'wicked sick';
 
+    button.on('clicked', (checked) => {
+        console.log('CLICKED ======> ', checked);
+    });
+
     console.log('asdfsfdsa', button instanceof EventEmitter);
     // button.on('clicked', (checked) => {
     //     console.log('clicked', checked);
     //     label.text = 'wicked';
     // });
-
-    // setTimeout(() => {
-    // button.setupConns();
-    // }, 2000);
-
-    // setTimeout(() => {
-    //     console.log('emitting click');
-    // //     button.emit('clicked');
-    //     setTimeout(() => {
-    //         console.log('emitting click');
-    //         //     button.emit('clicked');
-    //     }, 10000);
-    // }, 2000);
-
-    let data = 1;
-    const dataInterval = setInterval(() => {
-        console.log('===================> health check');
-        label.text = `${data}`;
-        data ++;
-        if (data > 10) {
-            clearInterval(dataInterval);
-        }
-    }, 1000);
 
     // button.on('clicked', () => {
     //     console.log('clicked');

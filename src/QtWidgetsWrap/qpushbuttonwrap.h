@@ -25,6 +25,12 @@ private:
   napi_env env_;
   napi_ref wrapper_;
   QPushButton* button_;
+
+  napi_ref js_this_ref_;
+  napi_ref emit_func_ref_;
+
+  napi_handle_scope scope_;
+//  napi_ref js_this_value_ref_;
   QList<QMetaObject::Connection> connections_;
 };
 
