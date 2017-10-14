@@ -34,15 +34,14 @@ void QRectWrap::Init(napi_env env, napi_value exports) {
   };
 
   napi_value cons;
-  CHECK_NAPI_RESULT(napi_define_class(env, "QRect", New, nullptr, 5, properties, &cons));
+  CHECK_NAPI_RESULT(napi_define_class(env, "QRect", -1, New, nullptr, 5, properties, &cons));
 
   CHECK_NAPI_RESULT(napi_create_reference(env, cons, 1, &constructor));
   CHECK_NAPI_RESULT(napi_set_named_property(env, exports, "QRect", cons));
 }
 
 napi_value QRectWrap::New(napi_env env, napi_callback_info info) {
-  bool is_constructor;
-  CHECK_NAPI_RESULT(napi_is_construct_call(env, info, &is_constructor));
+  bool is_constructor = IsConstructCall(env, info);
 
   if (is_constructor) {
     NAPI_PULL_FN_ARGS(4);

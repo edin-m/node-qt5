@@ -1,5 +1,9 @@
 #include "qwidgetwrap.h"
 
+#include <QLayout>
+
+#include "qhboxlayoutwrap.h"
+
 namespace nodeqt {
 
 napi_ref QWidgetWrap::constructor;
@@ -24,19 +28,19 @@ void QWidgetWrap::Destructor(napi_env env, void* nativeObject, void* /*finalize_
 void QWidgetWrap::Init(napi_env env, napi_value exports) {
   napi_property_descriptor properties[] = {
     DECLARE_NAPI_METHOD("show", show),
-    DECLARE_NAPI_METHOD("resize", resize)
+    DECLARE_NAPI_METHOD("resize", resize),
+    DECLARE_NAPI_METHOD("setLayout", setLayout)
   };
 
   napi_value cons;
-  CHECK_NAPI_RESULT(napi_define_class(env, "QWidget", New, nullptr, 2, properties, &cons));
+  CHECK_NAPI_RESULT(napi_define_class(env, "QWidget", -1, New, nullptr, 3, properties, &cons));
 
   CHECK_NAPI_RESULT(napi_create_reference(env, cons, 1, &constructor));
   CHECK_NAPI_RESULT(napi_set_named_property(env, exports, "QWidget", cons));
 }
 
 napi_value QWidgetWrap::New(napi_env env, napi_callback_info info) {
-  bool is_constructor;
-  CHECK_NAPI_RESULT(napi_is_construct_call(env, info, &is_constructor));
+  bool is_constructor = IsConstructCall(env, info);
 
   if (is_constructor) {
     // TODO
@@ -83,6 +87,21 @@ NAPI_METHOD(QWidgetWrap::resize) {
     NAPI_FN_EXTRACT_ARG(w, 0, int32);
     NAPI_FN_EXTRACT_ARG(h, 1, int32);
     obj->widget_->resize(w, h);
+  }
+  return nullptr;
+}
+
+NAPI_METHOD(QWidgetWrap::setLayout) {
+  QWidgetWrap* obj;
+  NAPI_UNWRAP_THIS_WITH_ARGS(1);
+
+  if (argc == 1) {
+    // TODO move
+    QHBoxLayoutWrap* pLayout;
+    napi_value parent = args[0];
+    CHECK_NAPI_RESULT(napi_unwrap(env, parent,
+                                  reinterpret_cast<void**>(&pLayout)));
+    obj->widget_->setLayout(pLayout->layout());
   }
   return nullptr;
 }

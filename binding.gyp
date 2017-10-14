@@ -13,15 +13,36 @@
         "src/QtWidgetsWrap/qapplicationwrap.cpp",
         "src/QtWidgetsWrap/qwidgetwrap.cpp",
         "src/QtWidgetsWrap/qpushbuttonwrap.cpp",
-        "src/node_qt5_common.cpp"
+        "src/QtWidgetsWrap/qlabelwrap.cpp",
+        "src/QtWidgetsWrap/qhboxlayoutwrap.cpp",
+        "src/node_qt5_common.cpp",
+      #  "src/QtCoreWrap/wicked.cpp"
+      #  "src/eventdispatcher.cpp"
+      #  "qt_eventdispatcher_libuv/src/eventdispatcher_libuv.cpp",
+      #  "qt_eventdispatcher_libuv/src/eventdispatcher_libuv_p.cpp",
+      #  "qt_eventdispatcher_libuv/src/socknot_p.cpp",
+      #  "qt_eventdispatcher_libuv/src/timers_p.cpp",
+      #  "<!(moc qt_eventdispatcher_libuv/src/eventdispatcher_libuv.h -o qt_eventdispatcher_libuv/src/moc_eventdispatcher_libuv.cpp && echo qt_eventdispatcher_libuv/src/moc_eventdispatcher_libuv.cpp)"
+
+         "src/qt-ed-mac/eventdispatcherlibuv.cpp",
+         "src/qt-ed-mac/eventdispatcherlibuv/async_channel.cpp",
+         "src/qt-ed-mac/eventdispatcherlibuv/libuv_api.cpp",
+         "src/qt-ed-mac/eventdispatcherlibuv/socket_notifier.cpp",
+         "src/qt-ed-mac/eventdispatcherlibuv/time_tracker.cpp",
+         "src/qt-ed-mac/eventdispatcherlibuv/timer_notifier.cpp",
+         "<!(moc src/qt-ed-mac/eventdispatcherlibuv.h -o src/qt-ed-mac/moc_eventdispatcherlibuv.cpp && echo src/qt-ed-mac/moc_eventdispatcherlibuv.cpp)"
       ],
       "include_dirs": [
-        "<!@(node -p \"require('node-addon-api').include\")",
-        "./QtCore",
+      "./QtCore",
+      "./QtCore/5.8.0",
+      "./QtCore/5.8.0/QtCore",
         "./QtGui",
+        "./QtGui/5.8.0",
+        "./QtGui/5.8.0/QtGui",
         "./QtWidgets",
         "./",
-        "./src"
+        "./src",
+        "/Users/edin-m/Qt/5.8/clang_64/mkspecs/macx-clang/"
       ],
       "cflags!": [ "-fno-exceptions" ],
       "cflags_cc!": [ "-fno-exceptions" ],

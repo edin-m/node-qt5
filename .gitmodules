@@ -1,0 +1,3 @@
+[submodule "qt_eventdispatcher_libuv"]
+	path = qt_eventdispatcher_libuv
+	url = https://github.com/sjinks/qt_eventdispatcher_libuv.git

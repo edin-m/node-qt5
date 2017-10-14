@@ -2,8 +2,9 @@
 #define NODE_QT5_COMMON_H
 
 #include <cassert>
+#include <iostream>
 
-#include "napi.h"
+#include "node_api.h"
 
 #define DECLARE_NAPI_METHOD(name, func) \
 { name, 0, func, 0, 0, 0, napi_default, 0 }
@@ -15,9 +16,6 @@
   */
 #define NAPI_METHOD(name) \
   napi_value name(napi_env env, napi_callback_info info)
-
-//#define NAPI_ADDON_METHOD(type, name) \
-//    type name(const Napi::CallbackInfo& info)
 
 /**
   * NAPI_FN_EXTRACT_ARG
@@ -64,6 +62,8 @@
   napi_value jsthis; \
   CHECK_NAPI_RESULT(napi_get_cb_info(env, info, &argc, args, &jsthis, nullptr)); \
   CHECK_NAPI_RESULT(napi_unwrap(env, jsthis, reinterpret_cast<void**>(&obj)))
+
+bool IsConstructCall(napi_env env, napi_callback_info info);
 
 bool NapiInstanceOf(napi_ref ctor, napi_env env, napi_value value);
 

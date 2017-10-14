@@ -2,6 +2,8 @@
 
 #include "qwidgetwrap.h"
 
+#include "qt_helpers.h"
+
 namespace nodeqt {
 
 napi_ref QPushButtonWrap::constructor;
@@ -14,6 +16,7 @@ QPushButtonWrap::QPushButtonWrap()
 }
 
 QPushButtonWrap::~QPushButtonWrap() {
+  REMOVE_ALL_CONNECTIONS();
   delete button_;
   napi_delete_reference(env_, wrapper_);
 }
@@ -29,15 +32,16 @@ void QPushButtonWrap::Init(napi_env env, napi_value exports) {
   };
 
   napi_value cons;
-  CHECK_NAPI_RESULT(napi_define_class(env, "QPushButton", New, nullptr, 0, properties, &cons));
+  CHECK_NAPI_RESULT(napi_define_class(env, "QPushButton", -1, New, nullptr,
+                                      sizeof(properties) / sizeof(*properties),
+                                      properties, &cons));
 
   CHECK_NAPI_RESULT(napi_create_reference(env, cons, 1, &constructor));
   CHECK_NAPI_RESULT(napi_set_named_property(env, exports, "QPushButton", cons));
 }
 
 napi_value QPushButtonWrap::New(napi_env env, napi_callback_info info) {
-  bool is_constructor;
-  CHECK_NAPI_RESULT(napi_is_construct_call(env, info, &is_constructor));
+  bool is_constructor = IsConstructCall(env, info);
 
   if (is_constructor) {
     // TODO
@@ -48,7 +52,9 @@ napi_value QPushButtonWrap::New(napi_env env, napi_callback_info info) {
     napi_valuetype type[argc];
     CHECK_NAPI_RESULT(napi_typeof(env, args[0], &type[0]));
     CHECK_NAPI_RESULT(napi_typeof(env, args[1], &type[1]));
-    if (argc == 2 && type[0] == napi_string) {
+    if ((argc == 1 && type[0] == napi_string) ||
+        (argc == 2 && type[0] == napi_string) // TODO || (argc == 2 && type[1] == napi_string)
+        ) {
       char buffer[128];
       size_t size = 128;
       size_t copied;
@@ -72,6 +78,7 @@ napi_value QPushButtonWrap::New(napi_env env, napi_callback_info info) {
                                 QPushButtonWrap::Destructor,
                                 nullptr,
                                 &obj->wrapper_));
+
     return jsthis;
   } else {
     // TODO

@@ -1,35 +1,36 @@
-#ifndef QWIDGETWRAP_H
-#define QWIDGETWRAP_H
+#ifndef QLABELWRAP_H
+#define QLABELWRAP_H
 
 #include "node_qt5_common.h"
 
-#include <QWidget>
+#include <QLabel>
 
 namespace nodeqt {
 
-class QWidgetWrap {
+class QLabelWrap {
 public:
   static void Init(napi_env env, napi_value exports);
   static void Destructor(napi_env env, void* nativeObject, void* finalize_hint);
   static bool IsInstanceOf(napi_env env, napi_value value);
 
-  explicit QWidgetWrap();
-  ~QWidgetWrap();
+  explicit QLabelWrap();
+  ~QLabelWrap();
 
-  inline QWidget* widget() { return widget_; }
+  inline QLabel* label() { return label_; }
+
 private:
   static napi_value New(napi_env env, napi_callback_info info);
   static napi_ref constructor;
 
-  static NAPI_METHOD(show);
-  static NAPI_METHOD(resize);
-  static NAPI_METHOD(setLayout);
+  static NAPI_METHOD(text);
+  static NAPI_METHOD(setText);
+  static NAPI_METHOD(setParent);
 
   napi_env env_;
   napi_ref wrapper_;
-  QWidget* widget_;
+  QLabel* label_;
 };
 
 }
 
-#endif // QWIDGETWRAP_H
+#endif // QLABELWRAP_H

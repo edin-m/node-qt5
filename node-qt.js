@@ -1,7 +1,5 @@
-let qt;
-
-// for IDE-syntax purposes
-qt = {
+// for IDE auto-complete purposes
+let qt = {
     QPoint: {
         isNull: null,
         multiply: null,
@@ -18,6 +16,7 @@ qt = {
         show: null,
         resize: null,
         windowTitle: null,
+        setLayout: null,
         events: {
             windowTitleChanged: null
         }
@@ -26,7 +25,17 @@ qt = {
         exec: null
     },
     QPushButton: {
-        
+        on: null,
+        signals: {
+            clicked: null
+        }
+    },
+    QLabel: {
+        text: null
+    },
+    QHBoxLayout: {
+        addWidget: () => {},
+        setLayout: () => {},
     }
 };
 
@@ -37,5 +46,10 @@ qt.AspectRatio = {
     KeepAspectRatio: 1,
     KeepAspectRatioByExpanding: 2
 };
+
+const EventEmitter = require('events');
+const util = require('util');
+
+util.inherits(qt.QPushButton, EventEmitter);
 
 module.exports = qt;

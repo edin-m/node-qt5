@@ -44,15 +44,15 @@ void QPointWrap::Init(napi_env env, napi_value exports) {
   };
 
   napi_value cons;
-  CHECK_NAPI_RESULT(napi_define_class(env, "QPoint", New, nullptr, 8, properties, &cons));
+  CHECK_NAPI_RESULT(napi_define_class(env, "QPoint", -1, New, nullptr, 8, properties, &cons));
 
   CHECK_NAPI_RESULT(napi_create_reference(env, cons, 1, &constructor));
   CHECK_NAPI_RESULT(napi_set_named_property(env, exports, "QPoint", cons));
 }
 
 napi_value QPointWrap::New(napi_env env, napi_callback_info info) {
-  bool is_constructor;
-  CHECK_NAPI_RESULT(napi_is_construct_call(env, info, &is_constructor));
+  bool is_constructor = IsConstructCall(env, info);
+//  CHECK_NAPI_RESULT(napi_is_construct_call(env, info, &is_constructor));
 
   if (is_constructor) {
     NAPI_PULL_FN_ARGS(2);

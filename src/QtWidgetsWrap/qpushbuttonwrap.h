@@ -3,7 +3,9 @@
 
 #include "node_qt5_common.h"
 
+#include <QObject>
 #include <QPushButton>
+#include <QList>
 
 namespace nodeqt {
 
@@ -23,6 +25,7 @@ private:
   napi_env env_;
   napi_ref wrapper_;
   QPushButton* button_;
+  QList<QMetaObject::Connection> connections_;
 };
 
 }
