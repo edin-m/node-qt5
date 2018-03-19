@@ -25,10 +25,7 @@ let qt = {
         exec: null
     },
     QPushButton: {
-        on: null,
-        signals: {
-            clicked: null
-        }
+
     },
     QLabel: {
         text: null
@@ -51,11 +48,5 @@ const EventEmitter = require('events');
 const util = require('util');
 
 util.inherits(qt.QPushButton, EventEmitter);
-
-// qt.QPushButton.prototype.emitx = function(...args) {
-//     console.log('EMIT XXX');
-//     console.log(this, this instanceof qt.QPushButton, ...args);
-//     this.emit('clicked');
-// };
 
 module.exports = qt;

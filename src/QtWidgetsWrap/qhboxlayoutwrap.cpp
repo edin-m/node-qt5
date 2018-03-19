@@ -1,5 +1,7 @@
 #include "qhboxlayoutwrap.h"
 
+#include <QDebug>
+
 #include "qwidgetwrap.h"
 
 namespace nodeqt {
@@ -21,7 +23,9 @@ QHBoxLayoutWrap::~QHBoxLayoutWrap() {
 /***** NAPI ******/
 
 void QHBoxLayoutWrap::Destructor(napi_env env, void* nativeObject, void* /*finalize_hint*/) {
+  qDebug() << "QHBoxLayoutWrap dtor 1";
   reinterpret_cast<QHBoxLayoutWrap*>(nativeObject)->~QHBoxLayoutWrap();
+  qDebug() << "QHBoxLayoutWrap dtor 2";
 }
 
 void QHBoxLayoutWrap::Init(napi_env env, napi_value exports) {
@@ -31,7 +35,7 @@ void QHBoxLayoutWrap::Init(napi_env env, napi_value exports) {
 
   napi_value cons;
   CHECK_NAPI_RESULT(napi_define_class(env, "QHBoxLayout", -1, New, nullptr,
-                                      1,
+                                      sizeof properties / sizeof *properties,
                                       properties, &cons));
 
   CHECK_NAPI_RESULT(napi_create_reference(env, cons, 1, &constructor));

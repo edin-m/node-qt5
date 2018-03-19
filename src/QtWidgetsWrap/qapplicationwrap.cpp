@@ -24,7 +24,7 @@ QApplicationWrap::QApplicationWrap()
   auto dispatcher = new qtjs::EventDispatcherLibUv();
   QApplication::setEventDispatcher(dispatcher);
 
-//  dispatcher->wakeUp();
+  dispatcher->wakeUp();
   application_ = new QApplication(argc, nullptr);
   QObject::connect(application_, &QCoreApplication::aboutToQuit, [=]() {
     qDebug() << "about to quit";
@@ -81,39 +81,20 @@ bool QApplicationWrap::IsInstanceOf(napi_env env, napi_value value) {
   return NapiInstanceOf(constructor, env, value);
 }
 
-//void process_UI(uv_idle_t* handle) {
-////    // Compute extra-terrestrial life
-////    // fold proteins
-////    // computer another digit of PI
-////    // or similar
-////    fprintf(stderr, "Computing PI...\n");
-////    // just to avoid overwhelming your terminal emulator
-//    QApplication::processEvents();
-////    uv_idle_stop(handle);
-//}
-
-//uv_idle_t idler;
-//uv_loop_t* loop;
-
 NAPI_METHOD(QApplicationWrap::exec) {
   QApplicationWrap* obj;
   NAPI_UNWRAP_THIS();
 
-//  loop = uv_default_loop();
+  // potentially schedule async work with this method
 
-//  uv_idle_init(loop, &idler);
-//  uv_idle_start(&idler, process_UI);
-
-  std::cout << "in 1" << std::endl;
+//  qDebug() << "in 1";
   int result = obj->application_->exec();
-//  int result = QCoreApplication::exec();
-  std::cout << "in 2" << std::endl;
+  qDebug() << "in 1" << result;
   napi_value val;
-  std::cout << "in 3" << std::endl;
+//  qDebug() << "in 1";
   CHECK_NAPI_RESULT(napi_create_int32(env, result, &val));
-  std::cout << "in 4" << std::endl;
+  qDebug() << "in 1";
   return val;
-//  return nullptr;
 }
 
 
